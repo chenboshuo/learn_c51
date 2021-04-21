@@ -1,19 +1,30 @@
+/**
+ * 定义一些实用函数
+ * 给寄存器一些别名
+ * 方便代码的理解
+ */
 #include <reg52.h>
-#define OVERFLOW 1
-#define NOT_OVERFLOW 0
+// 寄存器别名
 #define DATA P0  // P0 寄存器一般传递数据，为了阅读方便，改名为 DATA
 #define ADDRESS \
   P1  // P1 储存地址信息，低五位分别对应 ENLD,ADDR3,ADDR2,ADDR1,ADDR0
+
+// 一些数字的别名
+#define OVERFLOW 1  // TF 标志位1 表示溢出
+#define NOT_OVERFLOW 0
 #define SLEEP_ROUND 30000  // 睡眠时间是 30000 个for循环
 #define OPEN 0
-#define CLOSE 1
-#define ENABLE_LED_ARRAYS 14  // 01110
-#define CLOSE_ALL 255
+#define CLOSE 1               // 一般的led灯1表示关闭
+#define CLOSE_ALL 0xff        // 所有位为 1 表示全部关闭
+#define ENABLE_LED_ARRAYS 14  // 01110 表示右边LED单独的led灯
 #define TRUE 1
 
-// 数码管共阳极
-// code 说明指定数组存在 flash ROM 中，
-// 没有 code 会存到片内 RAM 中
+/**
+ * DIGITS_LED[i] 0<=i<16 表示i的数码管的表示
+ * 数码管共阳极，故1表示打开
+ * code 说明指定数组存在 flash ROM 中，
+ * 没有 code 会存到片内 RAM 中
+ */
 unsigned char code DIGITS_LED[] = {
     //         dp g f e; d c b a
     0xC0,  // 0: 1 1 0 0; 0 0 0 0
@@ -96,6 +107,9 @@ void show_char(char digit_tube_id, char c) {
   }
 }
 
+/**
+ * 睡眠一段时间来保持当前状态
+ */
 void sleep() {
   int i = SLEEP_ROUND;
   while (i--) {
@@ -103,6 +117,10 @@ void sleep() {
   }
 }
 
+/**
+ * 闪烁数码管
+ * @param t 闪烁次数
+ */
 void blink(int t) {
   unsigned int pre, i;
   for (i = 0; i < t; ++i) {
