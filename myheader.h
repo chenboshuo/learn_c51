@@ -82,7 +82,7 @@ void keep_one_second() {
  *                      也可以直接输入寄存器P1 的取值
  * @param c             显示的字符串
  */
-void show_char(char digit_tube_id, char c) {
+void show_char(unsigned int digit_tube_id, char c) {
   ADDRESS = digit_tube_id | 0x08;  // 8 指 ADDR3 = 1
   switch (c) {                     // dp g f e; d c b a
     case 'H':
