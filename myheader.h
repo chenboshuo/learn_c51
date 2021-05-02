@@ -15,14 +15,27 @@
 #define NOT_OVERFLOW 0
 #define SLEEP_ROUND 30000  // 睡眠时间是 30000 个for循环
 #define OPEN 0
-#define CLOSE 1               // 一般的led灯1表示关闭
-#define CLOSE_ALL 0xff        // 所有位为 1 表示全部关闭
-#define ENABLE_LED_ARRAYS 14  // 01110 表示右边LED单独的led灯
+#define CLOSE 1         // 一般的led灯1表示关闭
+#define CLOSE_ALL 0xff  // 所有位为 1 表示全部关闭
 #define TRUE 1
-#define ENALBE 1
+#define ENABLE 1
+
+// 阵列地址
+#define ENABLE_LED_ARRAYS 14  // 01110 表示右边LED单独的led灯
 
 // 计数器的初值
 #define TIME_50_MS 0x4c00
+#define TIME_1_MS 0xfc67
+
+// 计数器控制器
+#define T0_STATUS TR0  //
+
+// 中断相关寄存器
+#define ALLOW_INTERRUPT EA      // EA 寄存器控制使能所有中断
+#define ALLOW_T0_INTERRUPT ET0  // 允许T0中断
+
+// 中断号
+#define T0_OVERFLOW 1
 
 /**
  * DIGITS_LED[i] 0<=i<16 表示i的数码管的表示
@@ -85,6 +98,7 @@ void keep_one_second() {
  * @param c             显示的字符串
  */
 void show_char(unsigned int digit_tube_id, char c) {
+  DATA = CLOSE_ALL;  // 刷新之前关闭所有数码管防止残影
   ADDRESS = digit_tube_id | 0x08;  // 8 指 ADDR3 = 1
   switch (c) {                     // dp g f e; d c b a
     case 'H':
@@ -102,6 +116,9 @@ void show_char(unsigned int digit_tube_id, char c) {
     case 'O':
     case 'o':
       DATA = 0xC0;  //   1 1 0 0; 0 0 0 0
+      break;
+    case '!':
+      DATA = 0x79;  // 0 1 1 1; 1 0 0 1
       break;
     default:
       DATA = DIGITS_LED[c - '0'];
