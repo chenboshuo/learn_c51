@@ -3,7 +3,23 @@
  * 给寄存器一些别名
  * 方便代码的理解
  */
+
+#define USE_LINUX 1
+
+#ifdef USE_LINUX
+#include <8052.h>
+#define code __code
+#define interrupt __interrupt
+
+#else
+#ifdef _WIN32
+
 #include <reg52.h>
+#define __code code
+#define __interrupt interrupt
+#endif
+
+#endif
 
 // 寄存器别名
 #define DATA P0  // P0 寄存器一般传递数据，为了阅读方便，改名为 DATA

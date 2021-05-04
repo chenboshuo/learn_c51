@@ -3,9 +3,8 @@
  * 每个字符显示1s
  */
 //
-#include <reg52.h>
 
-#include "myheader.h"
+#include "mylib.h"
 
 void main() {
   while (TRUE) {

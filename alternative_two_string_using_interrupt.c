@@ -4,9 +4,8 @@
  * (中断方式实现)
  * 同时使用LED灯对5s进行计时
  */
-#include <reg52.h>
 
-#include "myheader.h"
+#include "mylib.h"
 
 #define FIVE_DOTS 0xe0  // 点亮最右边5个led灯
 

@@ -1,30 +1,10 @@
 /**
  * 流水灯左右移动并闪烁
+ * 现象：
+ * 从右往左闪烁三次，到头之后返回
  */
 
-#include <reg52.h>
-#define SLEEP_TIME 30000
-#define OPEN 0
-#define CLOSE 1
-#define ENABLE_LED_ARRAYS 14  // 01110
-#define CLOSE_ALL 255
-
-void sleep() {
-  int i = SLEEP_TIME;
-  while (i--) {
-    ;
-  }
-}
-void blink(int t) {
-  unsigned int pre, i;
-  for (i = 0; i < t; ++i) {
-    sleep();
-    pre = P0;  // backup
-    P0 = CLOSE_ALL;
-    sleep();
-    P0 = pre;
-  }
-}
+#include "mylib.h"
 
 void main() {
   unsigned int mask = 1;

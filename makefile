@@ -1,10 +1,10 @@
-.PHONY :  clean help %.o
+.PHONY :  clean help %.out
 ## make help : show this message.
 help :
 	@grep -h -E '^##' ${MAKEFILE_LIST} | sed -e 's/## //g' \
 		| column -t -s ':'
 
-%.o: %.ihx
+%.out: %.ihx
 	stcgal -P stc89 $<
 
 ## make *.ihx : generate the ihx files
