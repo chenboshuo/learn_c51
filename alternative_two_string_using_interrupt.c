@@ -7,24 +7,21 @@
 
 #include "mylib.h"
 
-#define FIVE_DOTS 0xe0  // 点亮最右边5个led灯
+#define FIVE_DOTS 0xE0  // 点亮最右边5个led灯
 
 #define init_t0() \
   TH0 = 0xFC;     \
   TL0 = 0x67;  //重新加载初值，计时1ms
 
-char string_chose = 0;    // 确定显示的字符串
-int interrupt_count = 0;  // 中断计数，确定毫秒数
-int tube_id = 0;
+char string_chose = 0;  // 确定显示的字符串
 int led_bits = FIVE_DOTS;
 
 // 显示 HELLO! 和 123456
 unsigned char code characters[2][6] = {"!OLLEH", "654321"};
 
 void main() {
-  TMOD = 0x01;  // 设置T0为模式1
-                // T0 = TIME_1_MS;             // 计时初值1ms
-  init_t0();
+  TMOD = 0x01;                // 设置T0为模式1
+  init_t0();                  // 计时初值1ms
   ALLOW_INTERRUPT = TRUE;     // 使能总中断
   ALLOW_T0_INTERRUPT = TRUE;  // 使能 T0 中断
   T0_STATUS = ENABLE;         // 启动 T0
@@ -33,7 +30,14 @@ void main() {
   }
 }
 
+/** 处理T0 溢出的函数
+ * 每 1ms T0 溢出一次
+ * 此时刷新led管和数码管
+ * 每5s 改变一次标志位
+ */
 void alternative_and_flash() interrupt T0_OVERFLOW {
+  static int tube_id = 0;
+  static int interrupt_count = 0;  // 中断计数，确定毫秒数
   ++interrupt_count;
   // T0 = 0xfc67;
   init_t0();
