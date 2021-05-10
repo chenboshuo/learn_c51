@@ -4,7 +4,7 @@
  * 方便代码的理解
  */
 
-#define USE_LINUX 1
+#define USE_LINUX 1  // Windows 环境注释掉这一句
 
 #ifdef USE_LINUX
 #include <8052.h>
@@ -12,13 +12,10 @@
 #define interrupt __interrupt
 
 #else
-#ifdef _WIN32
 
 #include <reg52.h>
 #define __code code
 #define __interrupt interrupt
-#endif
-
 #endif
 
 // 寄存器别名
@@ -29,19 +26,14 @@
 // 一些数字的别名
 #define OVERFLOW 1  // TF 标志位1 表示溢出
 #define NOT_OVERFLOW 0
-#define SLEEP_ROUND 30000  // 睡眠时间是 30000 个for循环
 #define OPEN 0
 #define CLOSE 1         // 一般的led灯1表示关闭
 #define CLOSE_ALL 0xff  // 所有位为 1 表示全部关闭
 #define TRUE 1
 #define ENABLE 1
 
-// 阵列地址
+// led灯地址
 #define ENABLE_LED_ARRAYS 14  // 01110 表示右边LED单独的led灯
-
-// 计数器的初值
-#define TIME_50_MS 0x4c00
-#define TIME_1_MS 0xfc67
 
 // 计数器控制器
 #define T0_STATUS TR0  //
@@ -52,6 +44,7 @@
 
 // 中断号
 #define T0_OVERFLOW 1
+#define T1_OVERFLOW 3
 
 /**
  * DIGITS_LED[i] 0<=i<16 表示i的数码管的表示
@@ -88,9 +81,13 @@ void keep_one_second() {
   char count = 0;  // 记录T0中断次数
   TMOD = 0x10;  // 设置T1为模式1 TMOD 高四位控制T0 GATE=0 T/C = 0 (M1 M0) = 1
                 // 工作方式0
-  // TH1 = 0xB8;  // 为T0赋初值0xB800, 根据主频计算计时20ms的初值
+  // 为T0赋初值0xB800, 根据主频计算计时20ms的初值(样例程序给出)
+  // TH1 = 0xB8;
   // TL1 = 0x00;
-  T1 = TIME_50_MS;
+
+  // 为T0赋初值0xFC67, 根据主频计算计时50ms的初值
+  TH1 = 0xFC;
+  TL1 = 0x67;
   TR1 = ENABLE;  // 启动T1
 
   while (count < 20) {
@@ -143,10 +140,10 @@ void show_char(unsigned int digit_tube_id, char c) {
 }
 
 /**
- * 睡眠一段时间来保持当前状态
+ * 睡眠一段时间(30000 个for循环)来保持当前状态
  */
 void sleep() {
-  int i = SLEEP_ROUND;
+  int i = 30000;
   while (i--) {
     ;
   }
@@ -165,4 +162,11 @@ void blink(int t) {
     sleep();
     DATA = pre;
   }
+}
+
+/* 注意地址最左边为mask 最低位*/
+void show_in_array(int col_id, int mask) {
+  DATA = CLOSE_ALL;
+  ADDRESS = col_id;
+  DATA = mask;
 }
