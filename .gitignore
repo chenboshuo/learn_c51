@@ -8,3 +8,6 @@
 *.rel
 *.rst
 *.sym
+
+tools/code.c
+tools/formatted_code.c

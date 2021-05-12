@@ -39,7 +39,7 @@ if code_file.exists():
         bin_str = bin_str.replace('0', OPEN_SYMBOL)
         bin_str = bin_str.replace('1',CLOSE_SYMBOL)
         log.info(bin_str)
-        formatted = re.sub('('+ num_str +'), ',r"\1, // "+ bin_str +"\n  ",formatted) 
+        formatted = re.sub('('+ num_str +'),[ \n]*',r"\1, // "+ bin_str +"\n  ",formatted) 
         formatted = re.sub('('+ num_str +')};',r"\1, // "+ bin_str +"\n};",formatted) 
     log.info(f"formatted:\n{formatted}")
         
