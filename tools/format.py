@@ -18,19 +18,16 @@ CLOSE_SYMBOL = '.'
 
 code_file = p /'code.c'
 formatted_file = p / 'formatted_code.c'
+image_file = p / 'image_file.txt'
 
 if code_file.exists():
-    # with math.open() as f:
-    #     text = f.read()
-    #     s = '1\n'
-    #     f.write(s)
     code_file.touch()
-    # print(1)
     s = code_file.read_text()
     nums = re.findall('0x([\dCDEF]+)',s) # 抽取所有字符
     log.info(f"content:\n{s}")
     log.info(f"expect image:")
     formatted = re.sub('\n {2,}','\n  ',s) # 去掉超长缩进
+    image_str = ""
     for num_str in set(nums):
         num = int(num_str,base=16)
         bin_str = bin(num)[2:]
@@ -45,3 +42,7 @@ if code_file.exists():
         
     formatted_file.touch()
     formatted_file.write_text(formatted)
+
+    image_file.touch()
+    image_str = "\n".join(re.findall('// (.+)',formatted))
+    image_file.write_text(image_str)
