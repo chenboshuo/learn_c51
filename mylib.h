@@ -1,4 +1,4 @@
-/**
+/** @file
  * 定义一些实用函数
  * 给寄存器一些别名
  * 方便代码的理解
@@ -19,32 +19,32 @@
 #endif
 
 // 寄存器别名
-#define DATA P0  // P0 寄存器一般传递数据，为了阅读方便，改名为 DATA
+#define DATA P0  //!< P0 寄存器一般传递数据，为了阅读方便，改名为 DATA
 #define ADDRESS \
-  P1  // P1 储存地址信息，低五位分别对应 ENLD,ADDR3,ADDR2,ADDR1,ADDR0
+  P1  //!< P1 储存地址信息，低五位分别对应 ENLD,ADDR3,ADDR2,ADDR1,ADDR0
 
 // 一些数字的别名
-#define OVERFLOW 1  // TF 标志位1 表示溢出
+#define OVERFLOW 1  //!< TF 标志位1 表示溢出
 #define NOT_OVERFLOW 0
 #define OPEN 0
-#define CLOSE 1         // 一般的led灯1表示关闭
-#define CLOSE_ALL 0xff  // 所有位为 1 表示全部关闭
+#define CLOSE 1         //!< 一般的led灯1表示关闭
+#define CLOSE_ALL 0xff  //!< 所有位为 1 表示全部关闭
 #define TRUE 1
 #define ENABLE 1
 
 // led灯地址
-#define ENABLE_LED_ARRAYS 14  // 01110 表示右边LED单独的led灯
+#define ENABLE_LED_ARRAYS 14  //!< 01110 表示右边LED单独的led灯
 
 // 计数器控制器
-#define T0_STATUS TR0  //
+#define T0_STATUS TR0  //!< TR0 控制 T0 的状态
 
 // 中断相关寄存器
-#define ALLOW_INTERRUPT EA      // EA 寄存器控制使能所有中断
-#define ALLOW_T0_INTERRUPT ET0  // 允许T0中断
+#define ALLOW_INTERRUPT EA      //!< EA 寄存器控制使能所有中断
+#define ALLOW_T0_INTERRUPT ET0  //!< 允许T0中断
 
 // 中断号
-#define T0_OVERFLOW 1
-#define T1_OVERFLOW 3
+#define T0_OVERFLOW 1  //!< 中断号1 表示 T0溢出
+#define T1_OVERFLOW 3  //!< 中断号3 表示 T1溢出
 
 /**
  * DIGITS_LED[i] 0<=i<16 表示i的数码管的表示

@@ -1,4 +1,5 @@
-.PHONY :  clean help %.out
+.PHONY :  clean help %.out docs
+.ONESHELL: # Applies to every targets in the file!
 ## make help : show this message.
 help :
 	@grep -h -E '^##' ${MAKEFILE_LIST} | sed -e 's/## //g' \
@@ -12,7 +13,10 @@ help :
 %.ihx: %.c
 	sdcc $<
 
-
+docs:
+	cd docs
+	doxygen
+	make --directory=build/latex
 
 ## make clean: clean the temp files
 clean:
