@@ -124,3 +124,4 @@ autodoc_default_options = {
 # Breathe Configuration
 breathe_projects = { "learn_c51": "../build/xml/" }
 breathe_default_project = "learn_c51"
+breathe_implementation_filename_extensions = ['.c', '.cc', '.cpp','.h']

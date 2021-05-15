@@ -4,12 +4,15 @@
  * 方便代码的理解
  */
 
-#define USE_LINUX 1  // Windows 环境注释掉这一句
+//!< @defgroup 对不同操作系统的调整
+///@{
+#define USE_LINUX 1  //!< Windows 环境注释掉这一句
 
 #ifdef USE_LINUX
 #include <8052.h>
-#define code __code
-#define interrupt __interrupt
+#define code __code  //!< 定义code 为 __code 来兼容windows风格
+#define interrupt \
+  __interrupt  //!< 定义interrupt 为 __interrupt 来兼容windows风格
 
 #else
 
@@ -17,61 +20,56 @@
 #define __code code
 #define __interrupt interrupt
 #endif
+///@}S
 
-// 寄存器别名
-#define DATA P0  //!< P0 寄存器一般传递数据，为了阅读方便，改名为 DATA
-#define ADDRESS \
-  P1  //!< P1 储存地址信息，低五位分别对应 ENLD,ADDR3,ADDR2,ADDR1,ADDR0
+//!< @defgroup 寄存器别名
+///@{
+/** P0 寄存器一般传递数据，为了阅读方便，
+ * 改名为 DATA
+ */
+#define DATA P0
+/**
+ * P1 储存地址信息，低五位分别对应 ENLD,ADDR3,ADDR2,ADDR1,ADDR0
+ */
+#define ADDRESS P1
+///@}
 
-// 一些数字的别名
-#define OVERFLOW 1  //!< TF 标志位1 表示溢出
-#define NOT_OVERFLOW 0
-#define OPEN 0
+//!< @defgroup 一些数字的特殊含义
+///@{
+#define OVERFLOW 1      //!< TF 标志位1 表示溢出
+#define NOT_OVERFLOW 0  //!< TF 标志位0 表示不溢出
+#define OPEN 0          //!< 一般的led灯0表示打开
 #define CLOSE 1         //!< 一般的led灯1表示关闭
 #define CLOSE_ALL 0xff  //!< 所有位为 1 表示全部关闭
-#define TRUE 1
-#define ENABLE 1
+#define TRUE 1          //!< 定义布尔值TRUE=1
+#define FALSE 0         //!< 定义布尔值FALSE=0
+#define ENABLE 1        //!< 1有时表示状态位的使能状态
+//@}
 
-// led灯地址
+//!< @defgroup  led灯地址
+///@{
 #define ENABLE_LED_ARRAYS 14  //!< 01110 表示右边LED单独的led灯
+///@}
 
-// 计数器控制器
+//!< @defgroup  计数器控制器
+///@{
 #define T0_STATUS TR0  //!< TR0 控制 T0 的状态
+///@}
 
-// 中断相关寄存器
+//!< @defgroup 中断相关寄存器
+///@{
 #define ALLOW_INTERRUPT EA      //!< EA 寄存器控制使能所有中断
 #define ALLOW_T0_INTERRUPT ET0  //!< 允许T0中断
+///@}
 
-// 中断号
+//!< @defgroup 中断号
+///@{
 #define T0_OVERFLOW 1  //!< 中断号1 表示 T0溢出
 #define T1_OVERFLOW 3  //!< 中断号3 表示 T1溢出
+///@}
 
-/**
- * DIGITS_LED[i] 0<=i<16 表示i的数码管的表示
- * 数码管共阳极，故1表示打开
- * code 说明指定数组存在 flash ROM 中，
- * 没有 code 会存到片内 RAM 中
- */
-unsigned char code DIGITS_LED[] = {
-    //         dp g f e; d c b a
-    0xC0,  // 0: 1 1 0 0; 0 0 0 0
-    0xF9,  // 1: 1 1 1 1; 1 0 0 1
-    0xA4,  // 2: 1 0 1 0; 1 1 0 0
-    0xB0,  // 3: 1 0 1 1; 0 0 0 0
-    0x99,  // 4: 1 0 0 1; 1 0 0 1
-    0x92,  // 5: 1 0 0 1; 0 0 1 0
-    0x82,  // 6: 1 0 0 0; 0 0 1 0
-    0xF8,  // 7: 1 1 1 1; 1 0 0 0
-    0x80,  // 8: 1 0 0 0; 0 0 0 0
-    0x90,  // 9: 1 0 0 1; 0 0 0 0
-    0x88,  // A: 1 0 0 0; 1 0 0 0
-    0x83,  // B: 1 0 0 0; 0 0 1 1
-    0xC6,  // C: 1 1 0 0; 0 1 1 0
-    0xA1,  // D: 1 0 1 0; 0 0 0 1
-    0x86,  // E: 1 0 0 0; 0 1 1 0
-    0x8E   // F: 1 0 0 0; 1 1 1 0
-};
-
+//!< @defgroup 一些小功能函数
+///@{
 /** 大约计时1s
  * 忽略访问内存时间
  * 采用T1定时 50ms
@@ -104,6 +102,60 @@ void keep_one_second() {
     }
   }
 }
+
+/**
+ * 睡眠一段时间(30000 个for循环)来保持当前状态
+ */
+void sleep() {
+  int i = 30000;
+  while (i--) {
+    ;
+  }
+}
+
+/**
+ * 闪烁数码管
+ * @param t 闪烁次数
+ */
+void blink(int t) {
+  unsigned int pre, i;
+  for (i = 0; i < t; ++i) {
+    sleep();
+    pre = DATA;  // backup
+    DATA = CLOSE_ALL;
+    sleep();
+    DATA = pre;
+  }
+}
+///@}
+
+//!< @defgroup 七段数码管相关函数和变量
+///@{
+/**
+ * DIGITS_LED[i] 0<=i<16 表示i的数码管的表示
+ * 数码管共阳极，故1表示打开
+ * code 说明指定数组存在 flash ROM 中，
+ * 没有 code 会存到片内 RAM 中
+ */
+unsigned char code DIGITS_LED[] = {
+    //         dp g f e; d c b a
+    0xC0,  // 0: 1 1 0 0; 0 0 0 0
+    0xF9,  // 1: 1 1 1 1; 1 0 0 1
+    0xA4,  // 2: 1 0 1 0; 1 1 0 0
+    0xB0,  // 3: 1 0 1 1; 0 0 0 0
+    0x99,  // 4: 1 0 0 1; 1 0 0 1
+    0x92,  // 5: 1 0 0 1; 0 0 1 0
+    0x82,  // 6: 1 0 0 0; 0 0 1 0
+    0xF8,  // 7: 1 1 1 1; 1 0 0 0
+    0x80,  // 8: 1 0 0 0; 0 0 0 0
+    0x90,  // 9: 1 0 0 1; 0 0 0 0
+    0x88,  // A: 1 0 0 0; 1 0 0 0
+    0x83,  // B: 1 0 0 0; 0 0 1 1
+    0xC6,  // C: 1 1 0 0; 0 1 1 0
+    0xA1,  // D: 1 0 1 0; 0 0 0 1
+    0x86,  // E: 1 0 0 0; 0 1 1 0
+    0x8E   // F: 1 0 0 0; 1 1 1 0
+};
 
 /** 使某一数码管显示某字符
  * @param digit_tube_id 管子的id 0-5 表示 LEDS0-LEDS5
@@ -138,35 +190,19 @@ void show_char(unsigned int digit_tube_id, char c) {
       break;
   }
 }
+///@}
 
-/**
- * 睡眠一段时间(30000 个for循环)来保持当前状态
+//!< @defgroup led点阵相关
+///@{
+/** 将mask所代表的内容放到row_id
+ * 注意地址最左边为mask 最低位
+ * @param row_id 行号
+ * @param mask   对应二进制信息
  */
-void sleep() {
-  int i = 30000;
-  while (i--) {
-    ;
-  }
-}
-
-/**
- * 闪烁数码管
- * @param t 闪烁次数
- */
-void blink(int t) {
-  unsigned int pre, i;
-  for (i = 0; i < t; ++i) {
-    sleep();
-    pre = DATA;  // backup
-    DATA = CLOSE_ALL;
-    sleep();
-    DATA = pre;
-  }
-}
-
-/* 注意地址最左边为mask 最低位*/
-void show_in_array(int col_id, int mask) {
+void show_in_array(int row_id, int mask) {
   DATA = CLOSE_ALL;
-  ADDRESS = col_id;
+  ADDRESS = row_id;
   DATA = mask;
 }
+
+///@}
