@@ -17,3 +17,4 @@ tools/image_file.txt
 
 # 文档
 docs/build
+!docs/**/*.rst

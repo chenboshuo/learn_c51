@@ -16,7 +16,7 @@ help :
 docs:
 	cd docs
 	doxygen
-	make --directory=build/latex
+	make html
 
 ## make clean: clean the temp files
 clean:
