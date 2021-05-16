@@ -9,8 +9,9 @@ chenboshuo 51学习单片机相关文档说明
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-   
+
    sections/mylib
+   api/library_root.rst
 
 Indices and tables
 ==================

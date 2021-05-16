@@ -45,7 +45,8 @@ extensions = [
     # 'IPython.sphinxext.ipython_directive',
     # "jupyter_sphinx.execute",
     # "jupyter_sphinx",
-    "breathe"
+    "breathe",
+    "exhale",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -73,10 +74,17 @@ html_static_path = ['_static']
 # reference https://github.com/sphinx-doc/sphinx/issues/6094
 latex_engine = 'xelatex'
 latex_elements = {
-    "papersize": "letterpaper",
-    "pointsize": "10pt",
+    'papersize': 'a4paper',
+    "pointsize": "12pt",
+    'fontpkg': r"""
+        \PassOptionsToPackage{bookmarksnumbered}{hyperref}
+        """,
     "figure_align": "htbp",
+    'maketitle': r'''
+        \pagenumbering{arabic}
+        ''',
     "preamble": r"""
+        \usepackage{setspace}
         \usepackage{listings}
         \usepackage{ctex}
         \setcounter{tocdepth}{4}
@@ -125,3 +133,32 @@ autodoc_default_options = {
 breathe_projects = { "learn_c51": "../build/xml/" }
 breathe_default_project = "learn_c51"
 breathe_implementation_filename_extensions = ['.c', '.cc', '.cpp','.h']
+
+# Setup the exhale extension
+exhale_args = {
+    # These arguments are required
+    "containmentFolder":     "./api",
+    "rootFileName":          "library_root.rst",
+    "rootFileTitle":         "Library API",
+    "doxygenStripFromPath":  "../",
+    # Suggested optional arguments
+    "createTreeView":        True,
+    # TIP: if using the sphinx-bootstrap-theme, you need
+    "treeViewIsBootstrap": True,
+    "exhaleExecutesDoxygen": True,
+    "exhaleDoxygenStdin":    "INPUT = ../../mylib.h"
+}
+
+# Tell sphinx what the primary language being documented is.
+primary_domain = 'c'
+
+# Tell sphinx what the pygments highlight language should be.
+highlight_language = 'c'
+
+
+# autodoc settings
+# https://stackoverflow.com/questions/64588821/how-napoleon-and-autodoc-interact-documenting-members
+autodoc_default_options = {
+    'members':          True,
+    'undoc-members':    True,
+}

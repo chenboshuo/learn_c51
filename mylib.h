@@ -44,7 +44,7 @@
 #define TRUE 1          //!< 定义布尔值TRUE=1
 #define FALSE 0         //!< 定义布尔值FALSE=0
 #define ENABLE 1        //!< 1有时表示状态位的使能状态
-//@}
+///@}
 
 //!< @defgroup  led灯地址
 ///@{
@@ -113,8 +113,7 @@ void sleep() {
   }
 }
 
-/**
- * 闪烁数码管
+/** 闪烁数码管
  * @param t 闪烁次数
  */
 void blink(int t) {

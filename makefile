@@ -12,11 +12,20 @@ help :
 # https://askubuntu.com/a/522776
 %.ihx: %.c
 	sdcc $<
-
-docs:
+## doxygen: generate doxygen docs
+doxygen:
 	cd docs
 	doxygen
+
+## docs: generate sphinx docs
+docs: doxygen
+	cd docs
 	make html
+
+## pdf: generate sphinx docs using latex
+pdf: doxygen
+	cd docs
+	make latexpdf
 
 ## make clean: clean the temp files
 clean:

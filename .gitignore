@@ -17,4 +17,5 @@ tools/image_file.txt
 
 # 文档
 docs/build
+docs/source/api
 !docs/**/*.rst
