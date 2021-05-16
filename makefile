@@ -17,15 +17,20 @@ doxygen:
 	cd docs
 	doxygen
 
-## docs: generate sphinx docs
-docs: doxygen
+## sphinx_html: generate sphinx docs
+sphinx_html: doxygen
 	cd docs
 	make html
 
-## pdf: generate sphinx docs using latex
-pdf: doxygen
+## sphinx_pdf: generate sphinx docs using latex
+sphinx_pdf: doxygen
 	cd docs
 	make latexpdf
+
+## doxygen_pdf: generate the docs pdf using doxygen
+doxygen_pdf: doxygen
+	cd docs/build/doxygen_latex
+	make all
 
 ## make clean: clean the temp files
 clean:
