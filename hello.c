@@ -1,4 +1,4 @@
-/**
+/** @file
  * 利用模拟器点亮一个led灯
  */
 #include <reg51.h>

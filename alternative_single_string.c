@@ -1,11 +1,10 @@
-/**
+/** @file
  * 在右上角数码管显示交替HELlo
  * 每个字符显示1s
  */
 //
-#include <reg52.h>
 
-#include "myheader.h"
+#include "mylib.h"
 
 void main() {
   while (TRUE) {

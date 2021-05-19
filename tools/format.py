@@ -2,7 +2,7 @@ from pathlib import Path
 import re
 
 # 日志
-import logging 
+import logging
 from rich.logging import RichHandler
 # 日志设置
 FORMAT = "%(message)s"
@@ -36,10 +36,10 @@ if code_file.exists():
         bin_str = bin_str.replace('0', OPEN_SYMBOL)
         bin_str = bin_str.replace('1',CLOSE_SYMBOL)
         log.info(bin_str)
-        formatted = re.sub('('+ num_str +'),[ \n]*',r"\1, // "+ bin_str +"\n  ",formatted) 
-        formatted = re.sub('('+ num_str +')};',r"\1, // "+ bin_str +"\n};",formatted) 
+        formatted = re.sub('('+ num_str +'),[ \n]*',r"\1, // "+ bin_str +"\n  ",formatted)
+        formatted = re.sub('('+ num_str +')};',r"\1, // "+ bin_str +"\n};",formatted)
     log.info(f"formatted:\n{formatted}")
-        
+
     formatted_file.touch()
     formatted_file.write_text(formatted)
 
