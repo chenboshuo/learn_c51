@@ -51,15 +51,28 @@
 #define ENABLE_LED_ARRAYS 14  //!< 01110 表示右边LED单独的led灯
 ///@}
 
-//!< @defgroup  计数器控制器
+//!< @defgroup  计数器控制器与中断
 ///@{
-#define T0_STATUS TR0  //!< TR0 控制 T0 的状态
-///@}
-
-//!< @defgroup 中断相关寄存器
-///@{
+#define T0_STATUS TR0           //!< TR0 控制 T0 的状态
 #define ALLOW_INTERRUPT EA      //!< EA 寄存器控制使能所有中断
 #define ALLOW_T0_INTERRUPT ET0  //!< 允许T0中断
+#define ENABLE_T0 TR0           //!< 启动T0的控制寄存器
+//!< 计时1ms 的计数器初值
+#define TIME_1MS() \
+  TH0 = 0xFC;      \
+  TL0 = 0x67;
+
+/**
+ * 使计时器T0计时1ms，
+ * 并在计时结束之后产生中断
+ */
+void enable_timer_t0_with_interrupt() {
+  ALLOW_INTERRUPT = TRUE;  // 使能总中断
+  TMOD = 0x01;             // 设置T0为模式1
+  TIME_1MS();
+  ALLOW_T0_INTERRUPT = TRUE;  // 使能T0中断
+  ENABLE_T0 = TRUE;           // 启动T0的控制寄存器
+}
 ///@}
 
 //!< @defgroup 中断号
@@ -163,8 +176,9 @@ unsigned char code DIGITS_LED[] = {
  */
 void show_char(unsigned int digit_tube_id, char c) {
   DATA = CLOSE_ALL;  // 刷新之前关闭所有数码管防止残影
-  ADDRESS = digit_tube_id | 0x08;  // 8 指 ADDR3 = 1
-  switch (c) {                     // dp g f e; d c b a
+  // 8 指 ADDR3 = 1
+  ADDRESS = digit_tube_id | 0x08;
+  switch (c) {  // dp g f e; d c b a
     case 'H':
       DATA = 0x89;  //  1 0 0 0; 1 0 0 1
       break;
@@ -174,8 +188,8 @@ void show_char(unsigned int digit_tube_id, char c) {
     case 'L':
       DATA = 0xc7;  //  1 1 0 0; 0 1 1 1
       break;
-    case 'l':  //  1 1 0 0; 1 1 1 1
-      DATA = 0xcf;
+    case 'l':
+      DATA = 0xcf;  //  1 1 0 0; 1 1 1 1
       break;
     case 'O':
     case 'o':
@@ -193,6 +207,8 @@ void show_char(unsigned int digit_tube_id, char c) {
 
 //!< @defgroup led点阵相关
 ///@{
+
+#define ROW_SIZE 8  //!< 该单片机共8行
 /** 将mask所代表的内容放到row_id
  * 注意地址最左边为mask 最低位
  * @param row_id 行号
