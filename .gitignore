@@ -19,3 +19,6 @@ tools/image_file.txt
 docs/build
 docs/source/api
 !docs/**/*.rst
+
+# python 缓存
+**/__pycache__
