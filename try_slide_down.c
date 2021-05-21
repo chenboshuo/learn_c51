@@ -7,13 +7,13 @@
  */
 #include "mylib.h"
 
-#define TAIL_UNIT 32  //!< 图片分为若干个单元，32为最后一个单元
+#define ARRAY_SIZE 32  //!< 图片分为若干个单元，32为最后一个单元
 #define SILDE_PERIOD 250  //!< 滑动周期250ms
 
 /**
  * 图片的字模表
  */
-unsigned char code image[] = {
+unsigned char code image[ARRAY_SIZE] = {
     0xFF,  // ........
     0xFF,  // ........
     0xFF,  // ........
@@ -89,7 +89,7 @@ void flash_and_slide() interrupt T0_OVERFLOW {
     ms_count = 0;
     --image_unit;
     if (image_unit == 0) {
-      image_unit = TAIL_UNIT;
+      image_unit = ARRAY_SIZE;
     }
   }
 }
