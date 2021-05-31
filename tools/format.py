@@ -1,5 +1,6 @@
 from pathlib import Path
 import re
+from typing import *
 
 # 日志
 import logging
@@ -72,9 +73,13 @@ def format_code(s: str) -> str:
     return formatted
 
 
-def transpose(s):
-    # TODO
-    return ""
+def transpose(str_list:List[str]) -> List[str]:
+    # str_list = s.split()
+    transposed = ["" for _ in range(len(s[0]))]
+    for i in range(len(s)):
+        for j in range(len(s[0])):
+            transposed[j]+= str_list[i][j]
+    return transposed
 
 
 def image_to_code(image_str: str,
@@ -95,11 +100,19 @@ def image_to_code(image_str: str,
     :rtype: str
     """
     image_list = image_str.split()
-    if len(image_list[0]) != 8:
-        image_list = transpose(image_str)
+    if len(image_list[0]) != 8 :
+        if len(image_list) == 8:
+            log.info('you image is transposed')
+            image_list = transpose(image_list)
+        else:
+            log.error('Please check out your image size')
+            exit(1)
 
     hex_strings = []
-    for num_str in image_list:
+    for i,num_str in enumerate(image_list):
+        if len(num_str) != 8:
+            log.error(f'line {i+1} image string length error:\n\t{num_str}')
+            exit(1)
         num = num_str.replace(OPEN_SYMBOL, '0').replace(CLOSE_SYMBOL, '1')
         num = num[::-1]
         num = hex(int(num, base=2))
