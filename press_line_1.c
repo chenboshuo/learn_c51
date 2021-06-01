@@ -11,6 +11,6 @@
 
 void main() {
   while (TRUE) {
-    open_lights(get_key(1));
+    open_lights(get_key_code(1));
   }
 }
