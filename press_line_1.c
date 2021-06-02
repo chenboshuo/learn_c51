@@ -13,5 +13,8 @@ void main() {
   set_listener_of_line(1);
   while (TRUE) {
     open_lights(get_key_code());
+
+    // 右起第三盏灯亮，表明在检测第一行有无按键按下
+    // open_lights(KEY_EVENT);
   }
 }
