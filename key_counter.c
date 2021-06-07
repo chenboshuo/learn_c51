@@ -10,11 +10,11 @@
 
 void main() {
   unsigned int key_counter = 0;
-  set_listener_of_line(1);
+  set_listener_of_line(0);
   while (TRUE) {
     open_data_tube(0, DIGITS_LED[key_counter]);  // 展示按键按下的次数
-    key_counter += is_pressed(4, KEY_EVENT);     // 按下计数
-    key_counter %= 9;                            // 只使用以为
+    key_counter += is_just_pressed_using_old_state(3, KEY_EVENT);  // 按下计数
+    key_counter %= 9;  // 只使用以为
     // open_lights(KEY_EVENT);
   }
 }

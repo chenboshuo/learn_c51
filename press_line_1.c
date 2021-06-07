@@ -10,7 +10,7 @@
 #include "lib/system_header.h"
 
 void main() {
-  set_listener_of_line(1);
+  set_listener_of_line(0);
   while (TRUE) {
     open_lights(get_key_code());
 
