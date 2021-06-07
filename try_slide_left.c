@@ -255,6 +255,7 @@ unsigned char code image[FRAME_SIZE][ROW_SIZE] = {
 
 void main() {
   enable_timer_t0_with_interrupt();
+  TIME_1MS();
   while (TRUE) {
     ;
   }

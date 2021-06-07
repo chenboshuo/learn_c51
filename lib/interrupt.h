@@ -16,6 +16,10 @@
 #define TIME_1MS() \
   TH0 = 0xFC;      \
   TL0 = 0x67;
+/// 计时 2 ms 的计数器初值
+#define TIME_2MS() \
+  TH0 = 0xF8;      \
+  TL0 = 0xCD;
 
 /**
  * 使计时器T0计时1ms，
@@ -24,7 +28,7 @@
 void enable_timer_t0_with_interrupt() {
   ALLOW_INTERRUPT = TRUE;  // 使能总中断
   TMOD = 0x01;             // 设置T0为模式1
-  TIME_1MS();
+  // TIME_1MS();
   ALLOW_T0_INTERRUPT = TRUE;  // 使能T0中断
   ENABLE_T0 = TRUE;           // 启动T0的控制寄存器
 }

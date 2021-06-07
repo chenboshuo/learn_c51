@@ -87,6 +87,7 @@ unsigned char code image[ARRAY_SIZE] = {
 };
 void main() {
   enable_timer_t0_with_interrupt();
+  TIME_1MS();
   while (TRUE) {
     ;
   }
