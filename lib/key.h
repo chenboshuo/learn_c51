@@ -24,7 +24,7 @@
 /**
  * 键盘按键的缓存，记录按键之前的状态
  */
-static unsigned char key_buffer[KEY_LINE_SIZE][KEY_COL_SIZE] = {
+unsigned char key_buffer[KEY_LINE_SIZE][KEY_COL_SIZE] = {
     {0xFF, 0xFF, 0xFF, 0xFF},
     {0xFF, 0xFF, 0xFF, 0xFF},
     {0xFF, 0xFF, 0xFF, 0xFF},
@@ -50,6 +50,12 @@ static unsigned int key_pre_status[KEY_LINE_SIZE][KEY_COL_SIZE] = {
 /**
  * 设置要检测的行
  * @param line_id 行号
+ * | line_id | keyout  | P2   |
+ * |:------- |:------- | ---- |
+ * | 0       | keyOut1 | P2.3 |
+ * | 1       | keyOut2 | P2.2 |
+ * | 2       | keyOut3 | P2.1 |
+ * | 3       | keyOut4 | P2.0 |
  */
 void set_listener_of_line(int line_id) {
   KEY_EVENT = ~(1 << (3 - line_id));  // 低四位用来设置行线的初值
@@ -92,7 +98,7 @@ unsigned int get_key_status_of_col(int col_id) {
   unsigned int bit_loc = 4 + col_id;
   unsigned int mask = 1 << bit_loc;
   // return (KEY_EVENT & mask) >> bit_loc;
-  return (KEY_EVENT & mask) != 0;
+  return (KEY_EVENT & mask) >> bit_loc;
 }
 
 /**
@@ -103,7 +109,6 @@ unsigned int get_key_status_of_col(int col_id) {
  * 最终结果只保留低四位
  */
 void update_key_buffer(int line_id, int col_id) {
-  --line_id, --col_id;
   key_buffer[line_id][col_id] =
       ((key_buffer[line_id][col_id] << 1) | get_key_status_of_col(col_id)) &
       0x0F;
@@ -116,7 +121,6 @@ void update_key_buffer(int line_id, int col_id) {
  * @return         按下为1否则为0
  */
 unsigned int is_just_pressed(int line_id, int col_id) {
-  --line_id, --col_id;
   // 如果没有变化，就不是刚刚按下
   if (key_pre_status[line_id][col_id] == key_status[line_id][col_id]) {
     return 0;
@@ -133,7 +137,6 @@ unsigned int is_just_pressed(int line_id, int col_id) {
  * @param col_id  列号
  */
 void update_key_status(int line_id, int col_id) {
-  --line_id, --col_id;
   if (key_buffer[line_id][col_id] == KEY_KEEP_PRESSED) {
     key_status[line_id][col_id] = KEY_PRESSED;
   } else if (key_buffer[line_id][col_id] == KEY_KEEP_RELEASED) {
